@@ -32,4 +32,19 @@ You’ll also need the Terraform CLI to deploy the infrastructure. You can find 
 Once installed, verify it by running:
 `terraform -version` in CLI.
 
-todo
+## Project Infrastructure
+
+### Project Strategy
+As I am based in Poland, the primary application infrastructure is hosted in the **Poland Central** region to ensure low latency and data residency compliance. For disaster recovery and high availability, a secondary region will be **Italy North**.
+
+# todo - continue the description
+
+## Project Organization
+
+### Directory Structure
+- `/modules`: Reusable code blocks (Networking, Compute, Storage).
+- `/environments/primary`: Specific configuration for **Poland Central**.
+- `/environments/backup`: Specific configuration for **Italy North**.
+
+# todo - project file tree
+# todo - continue the description
