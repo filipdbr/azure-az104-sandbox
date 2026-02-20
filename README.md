@@ -1,4 +1,4 @@
-# azure-administrator-sandbox
+# azure-az104-sandbox
 A ready-to-deploy lab environment designed to help you ace the AZ-104 certification exam.
 
 ## Why this project?
@@ -7,6 +7,10 @@ I built this infrastructure while preparing for **AZ-104** and learning **Terraf
 This environment is a sandbox to run exercises, test configurations, and get comfortable with Azure administration in a hands-on way.
 
 The goal is to practice various scenarius, which is helpfull during AZ-104 exam and in real life while working with Azure.
+
+## Conceputal Diagram
+
+![Conceptual diagram](docs/az_104_conceptual_diagram.png "Conceptual diagram")
 
 **Infrastructure as Code (IaC)**.
 
@@ -55,7 +59,3 @@ The repository is organized into reusable modules.
     * `storage/`: Storage Accounts and Private Link services.
 * `/environments/blueprint`: The primary entry point for the "working" configuration.
 * `/scenarios`: Specific `.tfvars` files designed to introduce intentional misconfigurations for troubleshooting practice.
-
-## Conceputal Diagram
-
-![Conceptual diagram](docs/az_104_conceptual_diagram.png "Conceptual diagram")
