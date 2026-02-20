@@ -12,8 +12,6 @@ The goal is to practice various scenarius, which is helpfull during AZ-104 exam 
 
 ![Conceptual diagram](docs/az_104_conceptual_diagram.png "Conceptual diagram")
 
-**Infrastructure as Code (IaC)**.
-
 ## Tech Stack
 * **Cloud:** Microsoft Azure
 * **IaC:** Terraform
@@ -31,8 +29,6 @@ You’ll also need the Terraform CLI to deploy the infrastructure. You can find 
 
 **Installation Guide:** [Install Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
-*Note: Even though the link says "AWS," the CLI installation process is exactly the same for Azure.*
-
 Once installed, verify it by running:
 `terraform -version` in CLI.
 
@@ -41,11 +37,12 @@ Once installed, verify it by running:
 ### Project Strategy
 As I am based in Poland, the primary application infrastructure is hosted in the **Poland Central** region to ensure low latency and data residency compliance. The environment is designed using a modular approach, allowing for high availability through Availability Zones and secure connectivity.
 
+You can easily change the deployment region in [variables](variables.tf) by changing location default value.
+
 ### Key Features
 * **Networking:** Multi-subnet VNet architecture with restricted access.
 * **Security:** Implementation of Azure Bastion, NSGs, and User-Defined Routes (UDR).
-* **Storage:** Private Endpoints for Storage Accounts (Blob/Files).
-* **Compute:** High-availability VM deployments with Load Balancers.
+* **Compute:** High-availability VM deployments (VMSS and Availability Zones) with Load Balancers.
 * **Governance:** Resource Locks and Tagging standards.
 
 ## Project Organization
@@ -53,9 +50,4 @@ As I am based in Poland, the primary application infrastructure is hosted in the
 ### Directory Structure
 The repository is organized into reusable modules.
 
-* `/modules`: Reusable code blocks for core infrastructure.
-    * `network/`: VNet, Subnets, NSG, and Route Tables.
-    * `compute/`: Virtual Machines, VMSS, and Load Balancers.
-    * `storage/`: Storage Accounts and Private Link services.
-* `/environments/blueprint`: The primary entry point for the "working" configuration.
-* `/scenarios`: Specific `.tfvars` files designed to introduce intentional misconfigurations for troubleshooting practice.
+### todo: continue
