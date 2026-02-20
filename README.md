@@ -35,16 +35,27 @@ Once installed, verify it by running:
 ## Project Infrastructure
 
 ### Project Strategy
-As I am based in Poland, the primary application infrastructure is hosted in the **Poland Central** region to ensure low latency and data residency compliance. For disaster recovery and high availability, a secondary region will be **Italy North**.
+As I am based in Poland, the primary application infrastructure is hosted in the **Poland Central** region to ensure low latency and data residency compliance. The environment is designed using a modular approach, allowing for high availability through Availability Zones and secure connectivity.
 
-# todo - continue the description
+### Key Features
+* **Networking:** Multi-subnet VNet architecture with restricted access.
+* **Security:** Implementation of Azure Bastion, NSGs, and User-Defined Routes (UDR).
+* **Storage:** Private Endpoints for Storage Accounts (Blob/Files).
+* **Compute:** High-availability VM deployments with Load Balancers.
+* **Governance:** Resource Locks and Tagging standards.
 
 ## Project Organization
 
 ### Directory Structure
-- `/modules`: Reusable code blocks (Networking, Compute, Storage).
-- `/environments/primary`: Specific configuration for **Poland Central**.
-- `/environments/backup`: Specific configuration for **Italy North**.
+The repository is organized into reusable modules.
 
-# todo - project file tree
-# todo - continue the description
+* `/modules`: Reusable code blocks for core infrastructure.
+    * `network/`: VNet, Subnets, NSG, and Route Tables.
+    * `compute/`: Virtual Machines, VMSS, and Load Balancers.
+    * `storage/`: Storage Accounts and Private Link services.
+* `/environments/blueprint`: The primary entry point for the "working" configuration.
+* `/scenarios`: Specific `.tfvars` files designed to introduce intentional misconfigurations for troubleshooting practice.
+
+## Conceputal Diagram
+
+![Conceptual diagram](docs/az_104_conceptual_diagram.png "Conceptual diagram")
