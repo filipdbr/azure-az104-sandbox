@@ -1,3 +1,4 @@
+# 20/02/2026
 # latest version, source: https://registry.terraform.io/providers/hashicorp/azurerm/latest
 terraform {
   required_providers {
