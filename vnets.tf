@@ -1,17 +1,32 @@
-# vnet for hub
-resource "azurerm_virtual_network" "hub" {
-  name = "vnet-prod-pl-hub"
-  location = azurerm_resource_group.hub.location
+module "hub_vnet" {
+  source              = "./modules/network"
+  name                = "vnet-prod-pl-hub"
   resource_group_name = azurerm_resource_group.hub.name
-  address_space = ["10.1.0.0/16"]
-  tags = local.shared_tags
+  location            = var.location
+  address_space       = ["10.1.0.0/16"]
+  tags                = local.shared_tags
+
+  subnets = {
+    "AzureBastionSubnet"  = "10.1.1.0/26"
+    "GatewaySubnet"       = "10.1.2.0/27"
+    "AzureFirewallSubnet" = "0.1.3.0.0/26"
+  }
 }
 
-# vnet for spoke
-resource "azurerm_virtual_network" "spoke" {
-  name = "vnet-prod-pl-spoke"
-  location = azurerm_resource_group.spoke.location
+module "spoke_vnet" {
+  source              = "./modules/network"
+  name                = "vnet-prod-pl-spoke"
   resource_group_name = azurerm_resource_group.spoke.name
-  address_space = ["10.2.0.0/16"]
-  tags = local.shared_tags
+  location            = var.location
+  address_space       = ["10.2.0.0/16"]
+  tags                = local.shared_tags
+
+  subnets = {
+    "snet-prod-pl-appgw:" = "10.2.1.0/24"
+    "snet-prod-pl-web"    = "10.2.2.0/24"
+    "snet-prod-pl-app"    = "10.2.3.0/24"
+    "snet-prod-pl-db"     = "10.2.4.0/24"
+  }
 }
+
+# todo add peering
