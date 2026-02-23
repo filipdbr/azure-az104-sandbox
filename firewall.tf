@@ -11,7 +11,7 @@ resource "azurerm_firewall" "default" {
   name                = "firewall-prod-pl-hub"
   location            = azurerm_resource_group.hub.location
   resource_group_name = azurerm_resource_group.hub.name
-  sku_name            = "AZFW_Hub"
+  sku_name            = "AZFW_Vnet"
   sku_tier            = "Standard"
 
   management_ip_configuration {

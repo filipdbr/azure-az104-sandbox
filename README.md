@@ -45,9 +45,34 @@ You can easily change the deployment region in [variables](variables.tf) by chan
 * **Compute:** High-availability VM deployments (VMSS and Availability Zones) with Load Balancers.
 * **Governance:** Resource Locks and Tagging standards.
 
-## Project Organization
+## Directory Structure
+The repository is organized into reusable modules to keep the code clean, scalable, and compliant with DRY principles.
 
-### Directory Structure
-The repository is organized into reusable modules.
+* **`modules/network/`**: A custom Terraform module responsible for provisioning Virtual Networks and dynamically generating subnets using the `for_each` loop.
+* **`vnets.tf`**: The root configuration file where the network module is called to create both the Hub and the Spoke environments, along with their bidirectional VNet Peering.
+* **`firewall.tf`**: Contains the deployment configuration for the central Azure Firewall (`AZFW_VNet` SKU) and its dedicated Public IP.
+* **`variables.tf` & `outputs.tf`**: Define global variables (such as the default `Poland Central` location) and capture essential resource IDs for cross-referencing.
 
-### todo: continue
+## How to Deploy
+Follow these steps:
+
+1. **Authenticate:** Log in to your Azure account via CLI.
+   `az login`
+2. **Initialize:** Download the required Terraform providers and initialize the working directory.
+   `terraform init`
+3. **Plan:** Preview the resources that will be created.
+   `terraform plan`
+4. **Apply:** Deploy the infrastructure to your Azure subscription (you will be prompted to type `yes`).
+   `terraform apply`
+
+**Note: Don't forget to run `terraform destroy` when you're done practicing to avoid unnecessary cloud charges!**
+
+# Roadmap (Work in Progress)
+This sandbox is continuously evolving. Here is the current implementation status:
+* [x] Hub & Spoke VNet Architecture
+* [x] VNet Peering with forwarded traffic enabled
+* [x] Central Azure Firewall provisioning
+* [ ] User-Defined Routes (UDR) to force Spoke traffic through the Hub Firewall
+* [ ] Virtual Machines deployment in Availability Zones
+* [ ] Secure remote access via Azure Bastion
+* [ ] Managed PaaS Database configuration
