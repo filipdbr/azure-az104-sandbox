@@ -33,18 +33,18 @@ module "spoke_vnet" {
 
 # peering spoke-to-hub
 resource "azurerm_virtual_network_peering" "spoke-to-hub" {
-  name = "peering-prod-pl-spoke-to-hub"
-  resource_group_name = azurerm_resource_group.spoke.name
-  virtual_network_name = module.spoke_vnet.vnet_name
+  name                      = "peering-prod-pl-spoke-to-hub"
+  resource_group_name       = azurerm_resource_group.spoke.name
+  virtual_network_name      = module.spoke_vnet.vnet_name
   remote_virtual_network_id = module.hub_vnet.vnet_id
-  allow_forwarded_traffic = true
+  allow_forwarded_traffic   = true
 }
 
 # peering hub-to-spoke
 resource "azurerm_virtual_network_peering" "hub-to-spoke" {
-  name = "peering-prod-pl-hub-to-spoke"
-  resource_group_name = azurerm_resource_group.hub.name
-  virtual_network_name = module.hub_vnet.vnet_name
+  name                      = "peering-prod-pl-hub-to-spoke"
+  resource_group_name       = azurerm_resource_group.hub.name
+  virtual_network_name      = module.hub_vnet.vnet_name
   remote_virtual_network_id = module.spoke_vnet.vnet_id
-  allow_forwarded_traffic = true
+  allow_forwarded_traffic   = true
 }
