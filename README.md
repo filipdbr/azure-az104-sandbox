@@ -72,7 +72,7 @@ This sandbox is continuously evolving. Here is the current implementation status
 * [x] Hub & Spoke VNet Architecture
 * [x] VNet Peering with forwarded traffic enabled
 * [x] Central Azure Firewall provisioning
-* [ ] User-Defined Routes (UDR) to force Spoke traffic through the Hub Firewall
+* [x] User-Defined Routes (UDR) to force Spoke traffic through the Hub Firewall
 * [ ] Virtual Machines deployment in Availability Zones
 * [ ] Secure remote access via Azure Bastion
 * [ ] Managed PaaS Database configuration
