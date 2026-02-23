@@ -45,11 +45,11 @@ resource "azurerm_route" "to_firewall" {
 
 # associate the table with web and db subnets
 resource "azurerm_subnet_route_table_association" "web" {
-  subnet_id = module.spoke_vnet["snet-prod-pl-web"].id
+  subnet_id = module.spoke_vnet.subnets["snet-prod-pl-web"].id
   route_table_id = azurerm_route_table.spoke.id
 }
 
 resource "azurerm_subnet_route_table_association" "db" {
-  subnet_id = module.spoke_vnet["snet-prod-pl-db"].id
+  subnet_id = module.spoke_vnet.subnets["snet-prod-pl-db"].id
   route_table_id = azurerm_route_table.spoke.id
 }
