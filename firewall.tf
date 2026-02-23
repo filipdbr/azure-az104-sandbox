@@ -43,13 +43,13 @@ resource "azurerm_route" "to_firewall" {
   next_hop_in_ip_address = azurerm_firewall.default.ip_configuration[0].private_ip_address
 }
 
-# associate the table with all the subnets in spoke if != app gateway
-resource "azurerm_subnet_route_table_association" "spoke" {
-  for_each = {
-    for name, subnet in module.spoke_vnet.subnets : name => subnet
-    if name != "snet-prod-pl-appgw"
-  }
+# associate the table with web and db subnets
+resource "azurerm_subnet_route_table_association" "web" {
+  subnet_id = module.spoke_vnet["snet-prod-pl-web"].id
+  route_table_id = azurerm_route_table.spoke.id
+}
 
-  subnet_id = each.value.id
+resource "azurerm_subnet_route_table_association" "db" {
+  subnet_id = module.spoke_vnet["snet-prod-pl-db"].id
   route_table_id = azurerm_route_table.spoke.id
 }
