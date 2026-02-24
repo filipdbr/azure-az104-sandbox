@@ -103,8 +103,8 @@ resource "azurerm_network_security_group" "db" {
   }
 }
 
-resource "azurerm_subnet_network_security_group_association" "app" {
-  subnet_id                 = module.spoke_vnet.subnets["snet-prod-pl-app"].id
+resource "azurerm_subnet_network_security_group_association" "db" {
+  subnet_id                 = module.spoke_vnet.subnets["snet-prod-pl-db"].id
   network_security_group_id = azurerm_network_security_group.app.id
 }
 
