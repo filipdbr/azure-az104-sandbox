@@ -10,7 +10,7 @@ The goal is to practice various scenarius, which is helpfull during AZ-104 exam 
 
 ## Conceputal Diagram
 
-![Conceptual diagram](docs/az_104_conceptual_diagram.png "Conceptual diagram")
+![Conceptual diagram](docs/conceptual-diagram.png "Conceptual diagram")
 
 ## Tech Stack
 * **Cloud:** Microsoft Azure
@@ -73,6 +73,8 @@ This sandbox is continuously evolving. Here is the current implementation status
 * [x] VNet Peering with forwarded traffic enabled
 * [x] Central Azure Firewall provisioning
 * [x] User-Defined Routes (UDR) to force Spoke traffic through the Hub Firewall
-* [ ] Virtual Machines deployment in Availability Zones
-* [ ] Secure remote access via Azure Bastion
-* [ ] Managed PaaS Database configuration
+* [x] Secure remote access via Azure Bastion
+* [ ] DB config + deployment
+* [ ] VMs
+* [ ] VPN
+* [ ] DNS
