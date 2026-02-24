@@ -10,7 +10,7 @@ The goal is to practice various scenarius, which is helpfull during AZ-104 exam 
 
 ## Conceputal Diagram
 
-![Conceptual diagram](docs/conceptual-diagram.png "Conceptual diagram")
+![Conceptual diagram](docs/conceptual_diagram.png "Conceptual diagram")
 
 ## Tech Stack
 * **Cloud:** Microsoft Azure
