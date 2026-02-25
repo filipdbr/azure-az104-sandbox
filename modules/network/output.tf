@@ -10,3 +10,7 @@ output "subnets" {
   value = azurerm_subnet.default
   description = "Map of created subnets"
 }
+
+output "rg" {
+  value = azurerm_virtual_network.default.resource_group_name
+}
