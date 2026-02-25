@@ -31,20 +31,17 @@ module "spoke_vnet" {
   }
 }
 
-# peering spoke-to-hub
-resource "azurerm_virtual_network_peering" "spoke-to-hub" {
-  name                      = "peering-prod-pl-spoke-to-hub"
-  resource_group_name       = azurerm_resource_group.spoke.name
-  virtual_network_name      = module.spoke_vnet.vnet_name
-  remote_virtual_network_id = module.hub_vnet.vnet_id
-  allow_forwarded_traffic   = true
-}
+# set up peering
+module "peering" {
+  source = "./modules/peering"
 
-# peering hub-to-spoke
-resource "azurerm_virtual_network_peering" "hub-to-spoke" {
-  name                      = "peering-prod-pl-hub-to-spoke"
-  resource_group_name       = azurerm_resource_group.hub.name
-  virtual_network_name      = module.hub_vnet.vnet_name
-  remote_virtual_network_id = module.spoke_vnet.vnet_id
-  allow_forwarded_traffic   = true
+  # vnet 1 : hub
+  vnet1_name = module.hub_vnet.vnet_name
+  vnet1_id = module.hub_vnet.vnet_id
+  vnet1_rg_name = module.hub_vnet.rg
+
+  # vnet 2 : spoke
+  vnet2_name = module.spoke_vnet.vnet_name
+  vnet2_id = module.spoke_vnet.vnet_id
+  vnet2_rg_name = module.spoke_vnet.rg
 }
