@@ -36,12 +36,26 @@ module "peering" {
   source = "./modules/peering"
 
   # vnet 1 : hub
-  vnet1_name = module.hub_vnet.vnet_name
-  vnet1_id = module.hub_vnet.vnet_id
+  vnet1_name    = module.hub_vnet.vnet_name
+  vnet1_id      = module.hub_vnet.vnet_id
   vnet1_rg_name = module.hub_vnet.rg
 
   # vnet 2 : spoke
-  vnet2_name = module.spoke_vnet.vnet_name
-  vnet2_id = module.spoke_vnet.vnet_id
+  vnet2_name    = module.spoke_vnet.vnet_name
+  vnet2_id      = module.spoke_vnet.vnet_id
   vnet2_rg_name = module.spoke_vnet.rg
+}
+
+# set up routing to firewall
+module "routing" {
+  source              = "./modules/routing"
+  route_table_name    = "rt-prod-pl-spoke"
+  resource_group_name = azurerm_resource_group.spoke.name
+  location            = azurerm_resource_group.spoke.location
+  firewall_private_ip = module.firewall.private_ip_address
+
+  subnets_ids = {
+    "web" = module.spoke_vnet.subnets["snet-prod-pl-web"].id,
+    "app" = module.spoke_vnet.subnets["snet-prod-pl-app"].id
+  }
 }
