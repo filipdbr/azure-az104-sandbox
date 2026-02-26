@@ -2,3 +2,19 @@ variable "location" {
   type        = string
   description = "main region for all Azure resources"
 }
+
+variable "sku" {
+  type        = string
+  description = "our default SKU - great value for money and perfect for testing purposes"
+}
+
+variable "storage_account_type" {
+  type        = string
+  description = "you can define your own value, however I recemmend keeping Standard_LRS"
+}
+
+variable "vmss_admin_pwd" {
+  type = string
+  description = "define your password to web-servers"
+  sensitive = true
+}
