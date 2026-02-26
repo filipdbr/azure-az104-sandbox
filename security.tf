@@ -11,11 +11,11 @@ module "firewall" {
 
 # NSG for app gateway subnet
 module "nsg_app_gateway" {
-  source = "./modules/security/nsg"
-  name = "nsg-prod-pl-spoke-appgw"
-  location = azurerm_resource_group.spoke.location
+  source              = "./modules/security/nsg"
+  name                = "nsg-prod-pl-spoke-appgw"
+  location            = azurerm_resource_group.spoke.location
   resource_group_name = azurerm_resource_group.spoke.name
-  subnet_id = module.spoke_vnet.subnets["snet-prod-pl-appgw"].id
+  subnet_id           = module.spoke_vnet.subnets["snet-prod-pl-appgw"].id
 
   security_rules = [{
     name                       = "AllowGatewayManager"
@@ -26,18 +26,18 @@ module "nsg_app_gateway" {
     source_port_range          = "*"
     destination_port_range     = "65200-65535"
     source_address_prefix      = "GatewayManager"
-    destination_address_prefix = "*"    
-  },
-  {
-    name                       = "AllowHTTPInbound"
-    priority                   = 110
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "Internet"
-    destination_address_prefix = "*"    
+    destination_address_prefix = "*"
+    },
+    {
+      name                       = "AllowHTTPInbound"
+      priority                   = 110
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "80"
+      source_address_prefix      = "Internet"
+      destination_address_prefix = "*"
   }]
 
   tags = local.shared_tags
@@ -45,11 +45,11 @@ module "nsg_app_gateway" {
 
 # NSG for web subnet in spoke vnet
 module "nsg_web" {
-  source = "./modules/security/nsg"
-  name = "nsg-prod-pl-spoke-web"
-  location = azurerm_resource_group.spoke.location
+  source              = "./modules/security/nsg"
+  name                = "nsg-prod-pl-spoke-web"
+  location            = azurerm_resource_group.spoke.location
   resource_group_name = azurerm_resource_group.spoke.name
-  subnet_id = module.spoke_vnet.subnets["snet-prod-pl-web"].id
+  subnet_id           = module.spoke_vnet.subnets["snet-prod-pl-web"].id
 
   security_rules = [{
     name                       = "AllowHTTPInbound"
@@ -60,7 +60,7 @@ module "nsg_web" {
     source_port_range          = "*"
     destination_port_range     = "80"
     source_address_prefix      = module.spoke_vnet.subnets["snet-prod-pl-appgw"].address_prefixes[0]
-    destination_address_prefix = "*"    
+    destination_address_prefix = "*"
   }]
 
   tags = local.shared_tags
@@ -68,11 +68,11 @@ module "nsg_web" {
 
 # NSG for app subnet
 module "nsg_app" {
-  source = "./modules/security/nsg"
-  name = "nsg-prod-pl-spoke-app"
-  location = azurerm_resource_group.spoke.location
+  source              = "./modules/security/nsg"
+  name                = "nsg-prod-pl-spoke-app"
+  location            = azurerm_resource_group.spoke.location
   resource_group_name = azurerm_resource_group.spoke.name
-  subnet_id = module.spoke_vnet.subnets["snet-prod-pl-app"].id
+  subnet_id           = module.spoke_vnet.subnets["snet-prod-pl-app"].id
 
   security_rules = [{
     name                       = "AllowHTTPandHTTPSInbound"
@@ -83,7 +83,7 @@ module "nsg_app" {
     source_port_range          = "*"
     destination_port_ranges    = ["80", "443"]
     source_address_prefix      = module.spoke_vnet.subnets["snet-prod-pl-app"].address_prefixes[0]
-    destination_address_prefix = "*"  
+    destination_address_prefix = "*"
   }]
 
   tags = local.shared_tags
@@ -91,11 +91,11 @@ module "nsg_app" {
 
 # NSG for db tier / subnet
 module "nsg_db" {
-  source = "./modules/security/nsg"
-  name = "nsg-prod-pl-spoke-db"
-  location = azurerm_resource_group.spoke.location
+  source              = "./modules/security/nsg"
+  name                = "nsg-prod-pl-spoke-db"
+  location            = azurerm_resource_group.spoke.location
   resource_group_name = azurerm_resource_group.spoke.name
-  subnet_id = module.spoke_vnet.subnets["snet-prod-pl-db"].id
+  subnet_id           = module.spoke_vnet.subnets["snet-prod-pl-db"].id
 
   security_rules = [{
     name                       = "AllowSQLnbound"
@@ -114,11 +114,11 @@ module "nsg_db" {
 
 # NSG for Bastion Subnet
 module "nsg_bastion" {
-  source = "./modules/security/nsg"
-  name = "nsg-prod-pl-hub-bastion"
-  location = azurerm_resource_group.hub.location
+  source              = "./modules/security/nsg"
+  name                = "nsg-prod-pl-hub-bastion"
+  location            = azurerm_resource_group.hub.location
   resource_group_name = azurerm_resource_group.hub.name
-  subnet_id = module.hub_vnet.subnets["AzureBastionSubnet"].id
+  subnet_id           = module.hub_vnet.subnets["AzureBastionSubnet"].id
 
   security_rules = [
     # inbound rules
@@ -153,7 +153,7 @@ module "nsg_bastion" {
       source_port_range          = "*"
       destination_port_range     = "443"
       source_address_prefix      = "AzureLoadBalancer" # service tag
-      destination_address_prefix = "*"      
+      destination_address_prefix = "*"
     },
     # outbound rules
     {
@@ -178,7 +178,7 @@ module "nsg_bastion" {
       source_address_prefix      = "*"
       destination_address_prefix = "AzureCloud" # service tag      
     }
-    ]
+  ]
 
   tags = local.shared_tags
 }
