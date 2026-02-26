@@ -1,6 +1,6 @@
 # order a vnet for hub
 module "hub_vnet" {
-  source              = "./modules/network"
+  source              = "./modules/network/vnets"
   name                = "vnet-prod-pl-hub"
   resource_group_name = azurerm_resource_group.hub.name
   location            = var.location
@@ -16,7 +16,7 @@ module "hub_vnet" {
 
 # order a vnet for spoke
 module "spoke_vnet" {
-  source              = "./modules/network"
+  source              = "./modules/network/vnets"
   name                = "vnet-prod-pl-spoke"
   resource_group_name = azurerm_resource_group.spoke.name
   location            = var.location
@@ -33,7 +33,7 @@ module "spoke_vnet" {
 
 # set up peering
 module "peering" {
-  source = "./modules/peering"
+  source = "./modules/network/peering"
 
   # vnet 1 : hub
   vnet1_name    = module.hub_vnet.vnet_name
@@ -48,7 +48,7 @@ module "peering" {
 
 # set up routing to firewall
 module "routing" {
-  source              = "./modules/routing"
+  source              = "./modules/network/routing"
   route_table_name    = "rt-prod-pl-spoke"
   resource_group_name = azurerm_resource_group.spoke.name
   location            = azurerm_resource_group.spoke.location

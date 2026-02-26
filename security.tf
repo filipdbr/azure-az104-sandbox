@@ -1,6 +1,6 @@
 # set up firewall
 module "firewall" {
-  source              = "./modules/firewall"
+  source              = "./modules/security/firewall"
   name                = "firewall-prod-pl-hub"
   resource_group_name = azurerm_resource_group.hub.name
   location            = azurerm_resource_group.hub.location
