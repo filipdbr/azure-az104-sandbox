@@ -1,0 +1,41 @@
+resource "azurerm_orchestrated_virtual_machine_scale_set" "web_servers" {
+  name                        = var.name
+  location                    = var.location
+  resource_group_name         = var.resource_group_name
+  platform_fault_domain_count = 1
+  sku_name                    = var.sku_name
+
+  os_profile {
+    linux_configuration {
+      admin_username                  = var.admin_name
+      admin_password                  = var.admin_pwd
+      disable_password_authentication = false
+    }
+    custom_data = var.custom_data
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+
+  os_disk {
+    storage_account_type = var.storage_type
+    caching              = "ReadWrite"
+  }
+
+  network_interface {
+    name    = "nic-${var.name}-prod-pl"
+    primary = true
+
+    ip_configuration {
+      name      = "default"
+      primary   = true
+      subnet_id = var.subnet_id
+    }
+  }
+
+  tags = var.tags
+}
