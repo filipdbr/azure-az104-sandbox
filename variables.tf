@@ -14,7 +14,7 @@ variable "storage_account_type" {
 }
 
 variable "vmss_admin_pwd" {
-  type = string
+  type        = string
   description = "define your password to web-servers"
-  sensitive = true
+  sensitive   = true
 }

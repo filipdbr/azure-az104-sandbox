@@ -34,6 +34,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "web_servers" {
       name      = "default"
       primary   = true
       subnet_id = var.subnet_id
+      application_gateway_backend_address_pool_ids = [var.application_gateway_backend_pool_id]
     }
   }
 

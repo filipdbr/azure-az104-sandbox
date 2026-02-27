@@ -48,3 +48,7 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable "application_gateway_backend_pool_id" {
+  type = string
+}
