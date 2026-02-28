@@ -11,3 +11,15 @@ module "web_servers" {
   tags                                = local.shared_tags
   application_gateway_backend_pool_id = module.app_gw.app_gateway_backend_address_pool_id
 }
+
+module "app_servers" {
+  source              = "./modules/compute/app_servers"
+  names               = ["vm-prod-pl-app-01", "vm-prod-pl-app-02"]
+  location            = azurerm_resource_group.spoke.location
+  resource_group_name = azurerm_resource_group.spoke.name
+  subnet_id           = module.spoke_vnet.subnets["snet-prod-pl-app"].id
+  size                = var.sku
+  admin_pwd           = var.app_servers_admin_pwd
+  # would be possible to define os_disk and but I will go with default settings
+  # default settings are to be found in moules/compute/app_servers
+}
