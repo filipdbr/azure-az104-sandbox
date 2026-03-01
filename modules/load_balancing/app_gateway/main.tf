@@ -58,8 +58,8 @@ resource "azurerm_application_gateway" "web" {
 
   http_listener {
     name                           = "${var.name}-http-listener"
-    frontend_ip_configuration_name = "${var.name}-frontend-ip-config"
-    frontend_port_name             = "${var.name}-frontend-port-name"
+    frontend_ip_configuration_name = "${var.name}-front-ip-config"
+    frontend_port_name             = "${var.name}-front-end-port"
     protocol                       = "Http"
   }
 
