@@ -17,7 +17,7 @@ variable "vmss_admin_pwd" {
   type        = string
   description = "define your password to web-servers"
   sensitive   = true
-  default = "testPass123"   # todo: remove later so the user can define it
+  default     = "testPass123" # todo: remove later so the user can define it
 }
 
 variable "app_server_size" {
@@ -28,5 +28,5 @@ variable "app_servers_admin_pwd" {
   type        = string
   description = "define your password to web-servers"
   sensitive   = true
-  default = "testPass123"   # todo: remove later so the user can define it
+  default     = "testPass123" # todo: remove later so the user can define it
 }
