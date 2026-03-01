@@ -10,3 +10,11 @@ module "app_gw" {
     "Complexity" = "Complex"
   })
 }
+
+module "internal_lb_app" {
+  source              = "./modules/load_balancing/internal_lb_app"
+  name                = "ilb-prod-pl-app"
+  resource_group_name = azurerm_resource_group.spoke.name
+  location            = azurerm_resource_group.spoke.location
+  subnet_id           = module.spoke_vnet.subnets["snet-prod-pl-app"].id
+}
