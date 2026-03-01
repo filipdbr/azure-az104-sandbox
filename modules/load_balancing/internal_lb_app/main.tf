@@ -13,7 +13,7 @@ resource "azurerm_lb" "app_lb" {
 }
 
 # configure the backend pool
-resource "azurerm_lb_backend_address_pool" "be_pool" {
+resource "azurerm_lb_backend_address_pool" "app_pool" {
   name            = "app-backend-pool"
   loadbalancer_id = azurerm_lb.app_lb.id
 }
@@ -35,5 +35,5 @@ resource "azurerm_lb_rule" "app_rule" {
   backend_port                   = 80
   frontend_ip_configuration_name = azurerm_lb.app_lb.frontend_ip_configuration[0].name
   probe_id                       = azurerm_lb_probe.internal_probe.id
-  backend_address_pool_ids       = azurerm_lb_backend_address_pool.be_pool.inbound_nat_rules
+  backend_address_pool_ids       = azurerm_lb_backend_address_pool.app_pool.inbound_nat_rules
 }
