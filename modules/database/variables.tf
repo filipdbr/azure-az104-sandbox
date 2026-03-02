@@ -23,16 +23,25 @@ variable "admin_pwd" {
 }
 
 variable "collation" {
-  type = string
+  type    = string
   default = "SQL_Latin1_General_CP1_CI_AS"
 }
 
 variable "prevent_destroy" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "tags" {
-  type = map(string)
-  default = { }
+  type    = map(string)
+  default = {}
+}
+
+variable "db_subnet" {
+  type = string
+}
+
+variable "vnet_id" {
+  type = string
+  description = "VNet ID used for private dns zone link"
 }
