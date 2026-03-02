@@ -24,10 +24,10 @@ module "spoke_vnet" {
   tags                = local.shared_tags
 
   subnets = {
-    "snet-prod-pl-appgw" = "10.2.1.0/24"
-    "snet-prod-pl-web"   = "10.2.2.0/24"
-    "snet-prod-pl-app"   = "10.2.3.0/24"
-    "snet-prod-pl-db"    = "10.2.4.0/24"
+    "snet-prod-pl-appgw" = { address = "10.2.1.0/24", endpoints = []}
+    "snet-prod-pl-web"   = { address = "10.2.2.0/24", endpoints = []}
+    "snet-prod-pl-app"   = { address = "10.2.3.0/24", endpoints = []}
+    "snet-prod-pl-db"    = { address = "10.2.4.0/24", endpoints = ["Microsoft.Sql"]}
   }
 }
 
