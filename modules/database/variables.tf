@@ -42,6 +42,6 @@ variable "db_subnet_id" {
 }
 
 variable "vnet_id" {
-  type = string
+  type        = string
   description = "VNet ID used for private dns zone link"
 }
