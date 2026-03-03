@@ -1,7 +1,7 @@
 module "database" {
   source              = "./modules/database"
   server_name         = "sql-server-prod-pl"
-  db_name             = "sql-db-prod-pl"
+  db_name             = "sql-db-pl"
   resource_group_name = azurerm_resource_group.spoke.name
   location            = azurerm_resource_group.spoke.location
   admin_login         = var.db_admin_login

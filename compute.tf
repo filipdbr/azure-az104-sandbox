@@ -3,7 +3,7 @@ module "web_servers" {
   name                                = "vmss-prod-pl-web"
   location                            = azurerm_resource_group.spoke.location
   resource_group_name                 = azurerm_resource_group.spoke.name
-  sku_name                            = var.sku
+  sku_name                            = var.vmss_size
   admin_pwd                           = var.vmss_admin_pwd
   custom_data                         = filebase64("${path.module}/scripts/web_config.sh")
   storage_type                        = var.storage_account_type
@@ -18,7 +18,7 @@ module "app_servers" {
   location            = azurerm_resource_group.spoke.location
   resource_group_name = azurerm_resource_group.spoke.name
   subnet_id           = module.spoke_vnet.subnets["snet-prod-pl-app"].id
-  size                = var.sku
+  size                = var.app_server_size
   admin_pwd           = var.app_servers_admin_pwd
   # would be possible to define os_disk and but I will go with default settings
   # default settings are to be found in moules/compute/app_servers
