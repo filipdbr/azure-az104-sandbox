@@ -1,6 +1,21 @@
 # azure-az104-sandbox
 A ready-to-deploy lab environment designed to help you ace the AZ-104 certification exam.
 
+## Table of Contents
+* [Why this project?](#why-this-project)
+* [Conceptual Diagram](#conceptual-diagram)
+* [Key Features](#key-features)
+* [Network Traffic Flow](#network-traffic-flow)
+* [Tech Stack](#tech-stack)
+* [Important: Budget Warning](#important-beware-of-your-budget)
+* [Prerequisites](#prerequisites)
+* [Secrets Management](#secrets-management)
+* [Project Structure & Modules](#project-structure--modules)
+* [How to Deploy](#how-to-deploy)
+* [Customization (Quotas & Sizing)](#️-customization-regional-quotas--sizing)
+* [How to verify the setup](#how-to-verify-the-setup)
+* [Optional: Hybrid Connectivity (VPN)](#optional-hybrid-connectivity-vpn)
+
 ## Why this project?
 I built this infrastructure while preparing for **AZ-104** and learning **Terraform**, mainly to have a place to practice. Now I’m sharing it with the community.
 
@@ -11,6 +26,15 @@ The goal is to practice various scenarius, which is helpfull during AZ-104 exam 
 ## Conceputal Diagram
 
 ![Conceptual diagram](docs/architecture_concept.png "Conceptual diagram")
+
+### Diagram Legend & Traffic Flows
+* **Continuous Green ($\longrightarrow$):** **External HTTP/HTTPS Traffic** – User requests from the Internet to the Web Tier.
+* **Dashed Green ($--\rightarrow$):** **Internal Backend Traffic** – Load-balanced communication between Web and App layers.
+* **Dotted Teal ($\dots\dots$):** **Private Link (SQL Access)** – Fully isolated database connectivity (Zero Public Access).
+* **Dashed Orange ($--\rightarrow$):** **Traffic Steering (UDR)** – Logic forcing all traffic to the Firewall.
+* **Continuous Orange ($\longrightarrow$):** **Inspected Egress** – Filtered outbound traffic leaving to the Internet.
+* **Continuous Black ($\longrightarrow$):** **Management Ingress** – Secure entry points for Admins (Bastion) and VPN.
+* **Dashed Blue ($--\rightarrow$):** **VNet Peering** – Private Azure backbone connecting Hub and Spoke.
 
 ## Key Features
 
@@ -71,29 +95,40 @@ You’ll also need the Terraform CLI to deploy the infrastructure. You can find 
 Once installed, verify it by running:
 `terraform -version` in CLI.
 
-## Project Infrastructure
+## Secrets Management
+To follow security best practices, sensitive data (passwords, VPN keys) is **not** stored in the main `terraform.tfvars` file.
 
-### Project Strategy
-As I am based in Poland, the primary application infrastructure is hosted in the **Poland Central** region to ensure low latency and data residency compliance. The environment is designed using a modular approach, allowing for high availability through Availability Zones and secure connectivity.
+### How to handle passwords:
+1. Create a local file named `secret.tfvars` (this file is already ignored by git).
+2. Copy the structure from `secret.tfvars.example`.
+3. Fill in your own passwords.
+4. Run terraform with the additional var-file flag:
+   ```bash
+   terraform plan -var-file="secret.tfvars"
+   terraform apply -var-file="secret.tfvars"
+   ```
 
-You can easily change the deployment region in [variables](variables.tf) by changing location default value.
+## Project Structure & Modules
 
-## Repository Structure
-
-The project is organized to separate concerns (Networking, Compute, Security), making the code easier to read and maintain:
-
-### Root Configuration
-* **`network.tf`**: Sets up the VNet architecture, subnets, and peering.
-* **`security.tf`**: Manages the Azure Firewall, Bastion, and Network Security Groups (NSGs).
-* **`compute.tf`**: Handles the Virtual Machine Scale Sets and standalone App VMs.
-* **`loadbalancing.tf`**: Configures the Application Gateway and the Internal Load Balancer, including the backend associations.
-* **`main.tf`**: Defines the Resource Group and links the core components together.
-* **`variables.tf` & `terraform.tfvars`**: Where you customize the deployment (location, VM sizes, names).
+The project follows a modular architecture to ensure maintainability, reusability, and a clear separation of concerns.
 
 ### Reusable Modules (`/modules`)
-* **`network/`**: Logic for dynamic VNet and subnet creation.
-* **`compute/`**: Blueprints for Linux VMs and Scale Sets.
-* **`load_balancing/`**: Separate modules for the App Gateway and Internal LB.
+
+* **`network/`**: The foundation of the lab. It handles dynamic VNet/Subnet creation, peering, and the **UDR (User Defined Routes)** logic to steer traffic.
+* **`security/`**: Centralizes security resources, including **Azure Firewall** for traffic inspection and **Azure Bastion** for secure management.
+* **`compute/`**: Contains blueprints for the workload layer, featuring **Linux VMs** for the App tier and **Virtual Machine Scale Sets (VMSS)** for the Web tier.
+* **`load_balancing/`**: Manages traffic distribution via **Application Gateway** (External L7) and **Internal Load Balancer** (Internal L4).
+* **`database/`**: Provisions **Azure SQL Database** with **Private Link** and Private DNS configurations for internal-only connectivity.
+* **`network/vpn/`**: Provisions a **VPN Gateway**, Local Network Gateway, and Connection for Site-to-Site hybrid connectivity.
+
+### Root Configuration
+
+* **`main.tf`**: The entry point that initializes Resource Groups and orchestrates all module calls.
+* **`network.tf` / `security.tf` / `compute.tf` / `loadbalancing.tf`**: These files act as high-level managers, passing necessary outputs (like Subnet IDs) between modules.
+* **`outputs.tf`**: Defines the data displayed in the terminal after deployment, such as the **Application Gateway access link**.
+* **`variables.tf`**: Declares all input variables (SKUs, naming, regions) used throughout the infrastructure.
+* **`terraform.tfvars`**: Stores non-sensitive default values (e.g., location, instance types).
+* **`secret.tfvars.example`**: A template for your local sensitive data (passwords, VPN shared keys).
 
 ## How to Deploy
 Follow these steps:
@@ -108,6 +143,21 @@ Follow these steps:
    `terraform apply`
 
 **Note: Don't forget to run `terraform destroy` when you're done practicing to avoid unnecessary cloud charges!*
+
+## ⚙️ Customization (Regional Quotas & Sizing)
+
+Depending on your Azure subscription type (e.g., Free Trial, Student), you might face **vCPU Quota limits** in certain regions. You can easily customize the deployment to fit your available quotas by modifying the `terraform.tfvars` file.
+
+### Adjusting location and SKUs:
+If you encounter a `QuotaExceeded` error, open `terraform.tfvars` and update the values:
+
+```hcl
+# Example configuration in terraform.tfvars
+location             = "westeurope"      # Change to a region where you have available quota
+vmss_size            = "Standard_B2s"    # Use smaller, cheaper instances if needed
+app_server_size      = "Standard_B2s"    
+storage_account_type = "Standard_LRS"
+```
 
 ## How to verify the setup
 
@@ -127,14 +177,17 @@ In the Portal, manually stop one of your App VMs. Refresh the Application Gatewa
 ### 4. Management Access
 Try to connect to a VM using its private IP through the **Bastion** service. If you can get in without a Public IP assigned to the VM itself, your management plane is secure and working.
 
-# Roadmap (Work in Progress)
-This sandbox is continuously evolving. Here is the current implementation status:
-* [x] Hub & Spoke VNet Architecture
-* [x] VNet Peering with forwarded traffic enabled
-* [x] Central Azure Firewall provisioning
-* [x] User-Defined Routes (UDR) to force Spoke traffic through the Hub Firewall
-* [x] Secure remote access via Azure Bastion
-* [x] VMs
-* [x] DB config + deployment
-* [x] private DNS for DB
-* [ ] VPN
+## 🌐 Optional: Hybrid Connectivity (VPN)
+
+This project includes a fully scripted **Site-to-Site VPN** module to simulate connecting an On-Premises office to your Azure environment. 
+
+### Why is it disabled by default?
+Provisioning an Azure VPN Gateway is a time-consuming process that typically takes **30 to 45 minutes**. To allow for quick testing of the core Hub & Spoke architecture, the VPN module is commented out by default.
+
+### How to enable VPN:
+1. Open the `vpn.tf` file in the root directory.
+2. Uncomment the `module "vpn_gateway"` block.
+3. In your peering configuration, ensure `use_remote_gateways` is set to `true` (see Troubleshooting below).
+4. Provide your office public IP and shared key in `secret.tfvars`.
+
+> **Troubleshooting Peering:** If you try to create a VNet Peering with the `UseRemoteGateway` flag set to `true` while the VPN Gateway is not deployed, Azure will return a `Bad Request` error. Only enable gateway transit in peering *after* or *during* the VPN Gateway deployment.
