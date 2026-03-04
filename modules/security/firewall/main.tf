@@ -7,6 +7,13 @@ resource "azurerm_public_ip" "firewall" {
   tags                = var.tags
 }
 
+resource "azurerm_firewall_policy" "default" {
+  name                = "${var.name}-policy"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  sku                 = "Standard"
+}
+
 resource "azurerm_firewall" "default" {
   name                = var.name
   resource_group_name = var.resource_group_name
@@ -20,5 +27,6 @@ resource "azurerm_firewall" "default" {
     public_ip_address_id = azurerm_public_ip.firewall.id
   }
 
+  firewall_policy_id  = azurerm_firewall_policy.default.id
   tags = var.tags
 }

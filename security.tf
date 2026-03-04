@@ -82,7 +82,7 @@ module "nsg_app" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_ranges    = ["80", "443"]
-    source_address_prefix      = module.spoke_vnet.subnets["snet-prod-pl-app"].address_prefixes[0]
+    source_address_prefix      = module.spoke_vnet.subnets["snet-prod-pl-web"].address_prefixes[0]
     destination_address_prefix = "*"
   }]
 
@@ -181,4 +181,63 @@ module "nsg_bastion" {
   ]
 
   tags = local.shared_tags
+}
+
+resource "azurerm_firewall_policy_rule_collection_group" "app_routing" {
+  name               = "app-routing-policy"
+  firewall_policy_id = module.firewall.policy_id 
+  priority           = 500
+
+  network_rule_collection {
+    name     = "allow-internal-app-traffic"
+    priority = 100
+    action   = "Allow"
+
+    # AppGw to Web
+    rule {
+      name                  = "allow-appgw-to-web"
+      protocols             = ["TCP"]
+      source_addresses      = module.spoke_vnet.subnets["snet-prod-pl-appgw"].address_prefixes
+      destination_addresses = module.spoke_vnet.subnets["snet-prod-pl-web"].address_prefixes
+      destination_ports     = ["80"]
+    }
+
+    # Web to App
+    rule {
+      name                  = "allow-web-to-app"
+      protocols             = ["TCP"]
+      source_addresses      = module.spoke_vnet.subnets["snet-prod-pl-web"].address_prefixes
+      destination_addresses = module.spoke_vnet.subnets["snet-prod-pl-app"].address_prefixes
+      destination_ports     = ["80", "443"]
+    }
+
+    # App to SQL
+    rule {
+      name                  = "allow-app-to-sql"
+      protocols             = ["TCP"]
+      source_addresses      = module.spoke_vnet.subnets["snet-prod-pl-app"].address_prefixes
+      destination_addresses = module.spoke_vnet.subnets["snet-prod-pl-db"].address_prefixes
+      destination_ports     = ["1433"]
+    }
+  }
+
+  # rule allowing VMs access to Internet in order to download updates etc.
+  application_rule_collection {
+    name     = "allow-os-updates"
+    priority = 200
+    action   = "Allow"
+    rule {
+      name = "allow-linux-repos"
+      protocols {
+        type = "Http"
+        port = 80
+      }
+      protocols {
+        type = "Https"
+        port = 443
+      }
+      source_addresses  = ["*"]
+      destination_fqdns = ["*.ubuntu.com", "*.microsoft.com", "download.docker.com"]
+    }
+  }
 }
