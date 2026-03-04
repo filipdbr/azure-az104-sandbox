@@ -3,6 +3,7 @@
 *.tfstate
 *.tfstate.*
 *tfplan*
+secret.tfvars
 
 # sensitive data in tfvars
 *.tfvars
