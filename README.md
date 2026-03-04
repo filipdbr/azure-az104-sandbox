@@ -177,7 +177,7 @@ In the Portal, manually stop one of your App VMs. Refresh the Application Gatewa
 ### 4. Management Access
 Try to connect to a VM using its private IP through the **Bastion** service. If you can get in without a Public IP assigned to the VM itself, your management plane is secure and working.
 
-## 🌐 Optional: Hybrid Connectivity (VPN)
+## Optional: Hybrid Connectivity (VPN)
 
 This project includes a fully scripted **Site-to-Site VPN** module to simulate connecting an On-Premises office to your Azure environment. 
 
