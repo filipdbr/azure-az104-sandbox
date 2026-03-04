@@ -15,7 +15,6 @@ resource "azurerm_virtual_network_gateway" "office" {
   type                = "Vpn"
   vpn_type            = "RouteBased"
   active_active       = true
-  enable_bgp          = false
   sku                 = "VpnGw1"
 
   ip_configuration {
