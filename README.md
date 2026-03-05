@@ -4,6 +4,7 @@ A ready-to-deploy lab environment designed to help you ace the AZ-104 certificat
 ## Table of Contents
 * [Why this project?](#why-this-project)
 * [Conceptual Diagram](#conceptual-diagram)
+* [Resource Visualizer (Live Environment)](#resource-visualizer-live-environment)
 * [Key Features](#key-features)
 * [Network Traffic Flow](#network-traffic-flow)
 * [Tech Stack](#tech-stack)
@@ -12,7 +13,7 @@ A ready-to-deploy lab environment designed to help you ace the AZ-104 certificat
 * [Secrets Management](#secrets-management)
 * [Project Structure & Modules](#project-structure--modules)
 * [How to Deploy](#how-to-deploy)
-* [Customization (Quotas & Sizing)](#️-customization-regional-quotas--sizing)
+* [Customization (Quotas & Sizing)](#customization-regional-quotas--sizing)
 * [How to verify the setup](#how-to-verify-the-setup)
 * [Optional: Hybrid Connectivity (VPN)](#optional-hybrid-connectivity-vpn)
 
@@ -28,13 +29,15 @@ The goal is to practice various scenarius, which is helpfull during AZ-104 exam 
 ![Conceptual diagram](docs/architecture_concept.png "Conceptual diagram")
 
 ### Diagram Legend & Traffic Flows
-* **Continuous Green:** **External HTTP/HTTPS Traffic** – User requests from the Internet to the Web Tier.
-* **Dashed Green:** **Internal Backend Traffic** – Load-balanced communication between Web and App layers.
-* **Dotted Teal:** **Private Link (SQL Access)** – Fully isolated database connectivity (Zero Public Access).
-* **Dashed Orange:** **Traffic Steering (UDR)** – Logic forcing all traffic to the Firewall.
-* **Continuous Orange:** **Inspected Egress** – Filtered outbound traffic leaving to the Internet.
-* **Continuous Black:** **Management Ingress** – Secure entry points for Admins (Bastion) and VPN.
-* **Dashed Blue:** **VNet Peering** – Private Azure backbone connecting Hub and Spoke.
+| flow | description |
+| :--- | :--- |
+| **continuous green** | **external traffic** – user requests from the internet to the web tier |
+| **dashed green** | **internal backend** – load-balanced communication (web to app layers) |
+| **dotted teal** | **private link** – isolated sql database connectivity |
+| **dashed orange** | **traffic steering** – udr logic routing traffic through azure firewall |
+| **continuous orange** | **inspected egress** – filtered outbound traffic to the internet |
+| **continuous black** | **management** – secure admin entry points (bastion/vpn) |
+| **dashed blue** | **vnet peering** – private backbone connecting hub and spoke |
 
 ## Resource Visualizer (Live Environment)
 This is an automated export of the resources as they appear in the Azure Portal after a successful deployment. It shows the real-time complexity and naming conventions of the sandbox.
@@ -46,27 +49,29 @@ This is an automated export of the resources as they appear in the Azure Portal 
 
 ## Key Features
 
-* **Hub & Spoke Achitecture**: Two peered VNets with isolated roles.
-* **Hybrid Load Balancing**: A public **Application Gateway** for the Web layer and a private **Internal Load Balancer** for the App layer.
-* **Traffic Control (UDR)**: Custom routing that forces all internet-bound traffic through the **Azure Firewall** for inspection.
-* **Zero Public IPs on VMs**: All virtual machines are kept in private subnets. Access is managed strictly via **Azure Bastion**.
-* **High Availability**: Resources are spread across multiple **Availability Zones** in the Poland Central region.
-* **Modular Code**: Infrastructure is broken down into reusable modules, making it easy to scale or modify.
+| feature | description |
+| :--- | :--- |
+| **hub & spoke** | two peered vnets with isolated roles for management (hub) and workloads (spoke) |
+| **hybrid load balancing** | public **application gateway** for web traffic and private **internal load balancer** for the app layer |
+| **traffic control (udr)** | custom routing forcing all internet-bound traffic through **azure firewall** for deep inspection |
+| **zero public ips** | all vms reside in private subnets; access is managed strictly via **azure bastion** |
+| **high availability** | resources are distributed across multiple **availability zones** in the poland central region |
+| **modular code** | infrastructure is organized into reusable modules for scalability and easy maintenance |
 
 ## Network Traffic Flow
 
 This environment is built on a Hub & Spoke architecture, with traffic routing managed through the following paths:
 
-### 1. Inbound Traffic (External)
-The end user requests enter the system through the **Application Gateway's** Public IP. As a Layer 7 load balancer, it evaluates the traffic and routes it to the **Web Tier** (Virtual Machine Scale Set) located in the `snet-prod-pl-appgw` subnet.
+### 1. Inbound (How users get in)
+External requests hit the **Application Gateway's** public IP first. As a layer 7 load balancer, it inspects the traffic and forwards it to the **Web Tier** (Virtual Machine Scale Set) sitting in the `snet-prod-pl-appgw` subnet.
 
-### 2. Internal Communication
-Communication between the Web and Application tiers is handled by an **Internal Load Balancer**. This ensures that requests are distributed efficiently across **App VMs** and provides redundancy across different Availability Zones.
+### 2. Internal (How tiers communicate)
+Traffic moving from the web layer to the application layer is handled by an **Internal Load Balancer**. This setup distributes the load across **App VMs** and ensures the system stays up even if an entire availability zone goes down.
 
-### 3. Outbound Traffic and Management (Internal)
-* **Centralized Inspection**: All outbound traffic from the Spoke network is redirected to the **Azure Firewall** in the Hub via **User-Defined Routes (UDR)**. This allows for centralized monitoring and traffic filtering.
-* **Administrative Access**: Virtual Machines do not have public IP addresses. Secure management is performed through **Azure Bastion**, which provides an SSH tunnel without exposing the servers to the internet.
-* **Connectivity**: The Hub and Spoke VNets communicate via **VNet Peering**, which allows resources to talk to each other across different networks.
+### 3. Outbound & Management (How we stay secure)
+* **Traffic Inspection**: all outbound traffic from the spoke is forced through the **Azure Firewall** in the hub via **User-Defined Routes (UDR)** for centralized filtering.
+* **No Public IPs**: none of the virtual machines have public IP addresses. all management happens through **Azure Bastion**, providing a secure tunnel without internet exposure.
+* **Global Backbone**: the hub and spoke networks are linked via **VNet Peering**, allowing private and fast communication across the whole environment.
 
 ## Tech Stack
 * **Cloud:** Microsoft Azure
@@ -77,11 +82,15 @@ Communication between the Web and Application tiers is handled by an **Internal 
 
 Please be aware that hosting this infrastructure in Azure is not free. This project uses some "Enterprise-grade" resources to give you a real-world experience, and Microsoft charges for them by the hour.
 
-### The Most Expensive Resources
-* **Azure Firewall**: This is the most expensive part of the lab (roughly **$0.90/hr**).
-* **Application Gateway & Bastion**: These are mid-range costs (about **$0.20 - $0.25/hr**). They are essential for the architecture, but they add up over time.
-* **Virtual Machines**: These are relatively cheap (~**$0.05/hr**), but remember they still charge you as long as they exist.
-* **Virtual Network Gateway (VPN)**: If you decide to enable the optional VPN module, be aware it is also quite expensive (starting at ~**$0.19/hr**). It is **disabled by default** to protect your credits.
+### Estimated Costs
+
+| resource | estimated cost | notes |
+| :--- | :--- | :--- |
+| **azure firewall** | **~$0.90/hr** | the most expensive part; central security hub |
+| **application gateway** | **~$0.25/hr** | l7 load balancer; price varies by tier/scaling |
+| **azure bastion** | **~$0.20/hr** | necessary for secure management without public ips |
+| **vpn gateway** | **~$0.19/hr** | **disabled by default**; enable only for hybrid lab |
+| **virtual machines** | **~$0.05/hr** | per instance; costs accrue as long as they exist |
 
 ### Tips:
 1. **The "Golden Rule"**: Always run `terraform destroy` the moment you finish your practice session. Don't leave it for "tomorrow."
@@ -118,25 +127,29 @@ To follow security best practices, sensitive data (passwords, VPN keys) is **not
 
 ## Project Structure & Modules
 
-The project follows a modular architecture to ensure maintainability, reusability, and a clear separation of concerns.
+The project follows a modular architecture to ensure maintainability and a clear separation of concerns.
 
-### Reusable Modules (`/modules`)
+### Reusable Modules (/modules)
 
-* **`network/`**: The foundation of the lab. It handles dynamic VNet/Subnet creation, peering, and the **UDR (User Defined Routes)** logic to steer traffic.
-* **`security/`**: Centralizes security resources, including **Azure Firewall** for traffic inspection and **Azure Bastion** for secure management.
-* **`compute/`**: Contains blueprints for the workload layer, featuring **Linux VMs** for the App tier and **Virtual Machine Scale Sets (VMSS)** for the Web tier.
-* **`load_balancing/`**: Manages traffic distribution via **Application Gateway** (External L7) and **Internal Load Balancer** (Internal L4).
-* **`database/`**: Provisions **Azure SQL Database** with **Private Link** and Private DNS configurations for internal-only connectivity.
-* **`network/vpn/`**: Provisions a **VPN Gateway**, Local Network Gateway, and Connection for Site-to-Site hybrid connectivity.
+| module | responsibility |
+| :--- | :--- |
+| network/ | vnet/subnet creation, peering, and udr logic for traffic steering |
+| security/ | central security: azure firewall (inspection) and azure bastion (access) |
+| compute/ | workload blueprints: linux vms (app tier) and vmss (web tier) |
+| load_balancing/ | traffic distribution: application gateway (l7) and internal lb (l4) |
+| database/ | azure sql with private link for internal-only connectivity |
+| network/vpn/ | optional site-to-site hybrid connectivity components |
 
 ### Root Configuration
 
-* **`main.tf`**: The entry point that initializes Resource Groups and orchestrates all module calls.
-* **`network.tf` / `security.tf` / `compute.tf` / `loadbalancing.tf`**: These files act as high-level managers, passing necessary outputs (like Subnet IDs) between modules.
-* **`outputs.tf`**: Defines the data displayed in the terminal after deployment, such as the **Application Gateway access link**.
-* **`variables.tf`**: Declares all input variables (SKUs, naming, regions) used throughout the infrastructure.
-* **`terraform.tfvars`**: Stores non-sensitive default values (e.g., location, instance types).
-* **`secret.tfvars.example`**: A template for your local sensitive data (passwords, VPN shared keys).
+| file | responsibility |
+| :--- | :--- |
+| main.tf | orchestrates all module calls and initializes resource groups |
+| network.tf / security.tf / ... | high-level managers linking modules together |
+| outputs.tf | defines terminal data, including the app gateway access link |
+| variables.tf | global declarations for skus, regions, and naming |
+| terraform.tfvars | default non-sensitive values (location, instance types) |
+| secret.tfvars.example | template for your local passwords and vpn keys |
 
 ## How to Deploy
 Follow these steps:
