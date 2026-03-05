@@ -38,8 +38,11 @@ The goal is to practice various scenarius, which is helpfull during AZ-104 exam 
 
 ## Resource Visualizer (Live Environment)
 This is an automated export of the resources as they appear in the Azure Portal after a successful deployment. It shows the real-time complexity and naming conventions of the sandbox.
+### Resource Group: `rg-hub`
+![Azure Resource Visualization: Hub](docs/rg-hub.png)
 
-![Azure Resource Visualization](docs/azure_resource_visualizer.png)
+### Resource Group: `rg-spoke`
+![Azure Resource Visualization: Spoke](docs/rg-spoke.png)
 
 ## Key Features
 
