@@ -48,6 +48,12 @@ module "peering" {
   vnet2_name_spoke    = module.spoke_vnet.vnet_name
   vnet2_id_spoke      = module.spoke_vnet.vnet_id
   vnet2_rg_name_spoke = module.spoke_vnet.rg
+
+  # as there were errors in deployemnt, the dependecy is needed for a proper order
+  depends_on = [
+    module.hub_vnet,
+    module.spoke_vnet
+  ]
 }
 
 # set up routing to firewall

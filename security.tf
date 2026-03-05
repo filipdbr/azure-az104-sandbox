@@ -241,3 +241,12 @@ resource "azurerm_firewall_policy_rule_collection_group" "app_routing" {
     }
   }
 }
+
+module "bastion" {
+  source = "./modules/security/bastion"
+  name_bastion = "bastion-prod-pl-hub"
+  resource_group_name = azurerm_resource_group.hub.name
+  location = azurerm_resource_group.hub.location
+  subnet_id = module.hub_vnet.subnets["AzureBastionSubnet"].id
+  tags = local.shared_tags
+}
