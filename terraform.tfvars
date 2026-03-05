@@ -5,3 +5,8 @@ app_server_size      = "Standard_D2s_v3"
 office_city          = "Warsaw"
 pip_office           = "1.2.3.4"
 office_address_space = ["10.0.0.0/16"]
+
+# logins
+login_app_servers = "linuxadmin"
+login_web_servers = "webadmin"
+login_db_admin    = "dbadmin"

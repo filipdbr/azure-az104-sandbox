@@ -14,3 +14,6 @@ output "app_ip_config_names" {
   value = azurerm_network_interface.app[*].ip_configuration[0].name
 }
 
+output "admin_username" {
+  value = azurerm_linux_virtual_machine.app[*].admin_username
+}

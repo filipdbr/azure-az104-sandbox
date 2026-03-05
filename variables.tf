@@ -13,38 +13,14 @@ variable "storage_account_type" {
   description = "you can define your own value, however I recemmend keeping Standard_LRS"
 }
 
-variable "vmss_admin_pwd" {
-  type        = string
-  description = "password to web-servers"
-  sensitive   = true
-}
-
 variable "app_server_size" {
   type = string
 }
 
-variable "app_servers_admin_pwd" {
-  type        = string
-  description = "password to app-servers"
-  sensitive   = true
-}
-
-variable "db_admin_login" {
-  type        = string
-  description = "define your db admin login"
-  default     = "dbadmin"
-}
-
-variable "db_pwd" {
-  type        = string
-  description = "password to the database"
-  sensitive   = true
-}
-
 variable "shared_key_vpn" {
-  type      = string
+  type        = string
   description = "shared key defined by user"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "office_city" {
@@ -60,4 +36,40 @@ variable "office_address_space" {
   type        = list(string)
   description = "address space of your office"
   default     = []
+}
+
+# logins
+
+variable "login_app_servers" {
+  type        = string
+  description = "app servers admin username"
+}
+
+variable "login_web_servers" {
+  type        = string
+  description = "web servers admin username"
+}
+
+variable "login_db_admin" {
+  type        = string
+  description = "database admin username"
+}
+
+# passwords
+variable "pwd_web_servers" {
+  type        = string
+  description = "password to web-servers"
+  sensitive   = true
+}
+
+variable "pwd_app_servers" {
+  type        = string
+  description = "password to app-servers"
+  sensitive   = true
+}
+
+variable "pwd_db" {
+  type        = string
+  description = "password to the database"
+  sensitive   = true
 }
