@@ -1,4 +1,4 @@
-# azure-az104-sandbox
+# azure-hub-spoke
 A ready-to-deploy lab environment designed to help you ace the AZ-104 certification exam.
 
 ## Table of Contents
